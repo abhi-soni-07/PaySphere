@@ -1,0 +1,63 @@
+package com.paySphere.transactionService.controller;
+
+import com.paySphere.transactionService.dto.TransactionRequest;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/transactions")
+public class TransactionController {
+
+    // payment initiated
+    @PostMapping("/initiate")
+    public String initiate(@RequestBody TransactionRequest request) {
+        return "SUCCESS";
+    }
+
+    // get the status of a transaction
+    @GetMapping("/status/{transaction_id}")
+    public String status(@PathVariable int transaction_id) {
+        return "SUCCESS";
+    }
+
+    // get transaction details
+    @GetMapping("/{transaction_id}")
+    public String getTransactionDetails(@PathVariable int transaction_id) {
+        return "SUCCESS";
+    }
+
+    // get user transaction history
+    @GetMapping("/user/{user_id}")
+    public String getUserTransactionHistory(@PathVariable int user_id) {
+        return "SUCCESS";
+    }
+
+    // retry a failed transaction
+    @PostMapping("/retry/{transaction_id}")
+    public String retryTransaction(@PathVariable int transaction_id) {
+        return "RETRY INITIATED";
+    }
+
+    // reverse a completed transaction (refund)
+    @PostMapping("/reverse/{transaction_id}")
+    public String reverseTransaction(@PathVariable int transaction_id) {
+        return "TRANSACTION REVERSED";
+    }
+
+    // cancel a pending transaction
+    @PostMapping("/cancel/{transaction_id}")
+    public String cancelTransaction(@PathVariable int transaction_id) {
+        return "TRANSACTION CANCELED";
+    }
+
+    // get transaction summary for a user
+    @GetMapping("/summary/{user_id}")
+    public String getTransactionSummary(@PathVariable int user_id) {
+        return "USER SUMMARY";
+    }
+
+    @GetMapping("/statement/pdf/{user_id}")
+    public String downloadTransactionStatement(@PathVariable int user_id) {
+        return "PDF GENERATED FOR USER ID: " + user_id;
+    }
+
+}
