@@ -1,12 +1,16 @@
 package com.paySphere.transactionService.controller;
 
 import com.paySphere.transactionService.dto.TransactionRequest;
+import com.paySphere.transactionService.repository.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
 
+    @Autowired
+    TransactionRepository transaction;
     // payment initiated
     @PostMapping("/initiate")
     public String initiate(@RequestBody TransactionRequest request) {
