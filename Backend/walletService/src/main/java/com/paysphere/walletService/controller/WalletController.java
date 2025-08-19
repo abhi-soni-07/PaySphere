@@ -1,6 +1,7 @@
 package com.paysphere.walletService.controller;
 
 import com.paysphere.walletService.dto.*;
+import com.paysphere.walletService.dto.response.ApiResponse;
 import com.paysphere.walletService.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,30 +14,40 @@ public class WalletController {
     @Autowired
     private WalletService service;
 
+    //activate user wallet account
     @PostMapping
-    public ResponseEntity<WalletResponse> createWalletAccount(@RequestBody CreateWalletRequest request){
-        WalletResponse response = service.createWallet(request);
+    public ResponseEntity<ApiResponse> createWalletAccount(@RequestBody CreateWalletRequest request){
+        ApiResponse response = service.createWallet(request.getUserId());
+        if (response.getHttpStatusCode() == 409) return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(response);
     }
+
+    //fetch user wallet balance
     @GetMapping("/{userId}/balance")
-    public ResponseEntity<BalanceResponse> getBalance(@PathVariable long userId){
-        BalanceResponse response=service.getBalance(userId);
+    public ResponseEntity<ApiResponse> getBalance(@PathVariable long userId){
+        ApiResponse response=service.getBalance(userId);
+        if(response.getHttpStatusCode() == 404) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    //add balance to user wallet
     @PostMapping("/{userId}/credit")
-    public ResponseEntity<UpdateBalanceResponse> addBalance(@PathVariable long userId,@RequestBody UpdateBalanceRequest request){
-        UpdateBalanceResponse response =new UpdateBalanceResponse();
-        if(response.getStatus() == "failed") return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    public ResponseEntity<ApiResponse> addBalance(@PathVariable long userId,@RequestBody UpdateBalanceRequest request){
+        ApiResponse response = service.addBalance(userId, request.getAmount());
+        if(response.getHttpStatusCode() == 404) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
 
+
+    //deduct amount from user wallet
     @PostMapping("/{userId}/debit")
-    public ResponseEntity<UpdateBalanceResponse> deductBalance(@PathVariable long userId,@RequestBody UpdateBalanceRequest request){
-        UpdateBalanceResponse response =new UpdateBalanceResponse();
-        if(response.getStatus() == "failed") return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    public ResponseEntity<ApiResponse> deductBalance(@PathVariable long userId,@RequestBody UpdateBalanceRequest request){
+        ApiResponse response = service.deductBalance(userId, request.getAmount());
+        if(response.getHttpStatusCode() == 404) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        if (response.getHttpStatusCode() == 409) return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
