@@ -2,12 +2,19 @@ package com.paySphere.transactionService.controller;
 
 import com.paySphere.transactionService.dto.TransactionRequest;
 import com.paySphere.transactionService.repository.TransactionRepository;
+import com.paySphere.transactionService.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import  com.paySphere.transactionService.model.Transaction;
+
 
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
+    @Autowired
+    TransactionService service;
 
     @Autowired
     TransactionRepository transaction;
@@ -23,10 +30,12 @@ public class TransactionController {
         return "SUCCESS";
     }
 
+
     // get transaction details
     @GetMapping("/{transaction_id}")
-    public String getTransactionDetails(@PathVariable int transaction_id) {
-        return "SUCCESS";
+    public ResponseEntity<Transaction> getTransactionDetails(@PathVariable long transactionId) {
+        Transaction response = service.getTransactionDetailsById(transactionId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // get user transaction history

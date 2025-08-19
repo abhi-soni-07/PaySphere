@@ -1,23 +1,25 @@
 package com.paySphere.transactionService.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Table(name = "")
 public class Transaction {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false,unique = true)
     private Long id;
     @Column(name = "from_user_id",nullable = false)
-    private Integer from_user;
+    private Integer fromUser;
     @Column(name = "to_user_id",nullable = false)
-    private Integer to_user;
+    private Integer toUser;
     @Column(nullable = false)
     private BigDecimal amount;
     @Column(nullable = false)
@@ -25,7 +27,9 @@ public class Transaction {
     @Column(nullable = false)
     private String status;
     @Column(name = "reference_id",nullable = false)
-    private String transaction_id;
+    private String transactionId;
+    @CreationTimestamp
     private LocalDateTime initiated_at;
+    @UpdateTimestamp
     private LocalDateTime completed_at;
 }
